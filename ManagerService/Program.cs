@@ -1,11 +1,11 @@
 using ManagerService.Data; // Пространство имен твоего контекста
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 
 // ===== РЕГИСТРАЦИЯ КОНТЕКСТА БАЗЫ ДАННЫХ =====
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ManagerService.Data;
-using ManagerService.Models;
+﻿using ManagerService.Data;
+using ManagerService.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ManagerService.Controllers
 {
+    [ApiController]
+    [Route("PracticeTypes")]
     public class PracticeTypesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -14,14 +15,42 @@ namespace ManagerService.Controllers
             _context = context;
         }
 
-        // GET: PracticeTypes
-        public async Task<IActionResult> Index()
+        [HttpGet("GetById")]
+        public IActionResult GetPracticeTypeById([FromQuery]int id)
         {
-            // Получаем все записи из таблицы PracticeTypes
-            var practiceTypes = await _context.PracticeTypes.ToListAsync();
+            var practiceType = _context.PracticeTypes
+            .Where(pt => pt.IdPracticeType == id)
+            .Select(pt => new PracticeTypeDto
+            {
+                IdPracticeType = pt.IdPracticeType,
+                Name = pt.Name,
+                Description = pt.Description
+            })
+            .FirstOrDefault();
 
-            // Передаем их в представление
-            return View(practiceTypes);
+            if (practiceType == null)
+                return NotFound();
+
+            return Ok(practiceType);
+        }
+
+        [HttpGet("All")]
+        public ActionResult<string> GetPracticeTypes()
+        {
+            var practiceTypes = _context.PracticeTypes
+            .Select(pt => new PracticeTypeDto
+            {
+                IdPracticeType = pt.IdPracticeType,
+                Name = pt.Name,
+                Description = pt.Description
+            })
+            .ToList();
+
+            if (practiceTypes.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(practiceTypes);
         }
     }
 }
