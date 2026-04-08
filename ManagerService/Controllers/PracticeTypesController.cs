@@ -29,13 +29,14 @@ namespace ManagerService.Controllers
             .FirstOrDefault();
 
             if (practiceType == null)
-                return NotFound();
-
+            {
+                return NotFound("нет такого типа практики");
+            }
             return Ok(practiceType);
         }
 
-        [HttpGet("All")]
-        public ActionResult<string> GetPracticeTypes()
+        [HttpGet]
+        public ActionResult<List<PracticeTypeDto>> GetPracticeTypes()
         {
             var practiceTypes = _context.PracticeTypes
             .Select(pt => new PracticeTypeDto
