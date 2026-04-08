@@ -1,8 +1,6 @@
-﻿using InternshipManager.Api.Models.Supervisor;
-using ManagerService.Enums;
+﻿using ManagerService.Enums;
 using ManagerService.Models.manager;
 using ManagerService.Models.shared;
-using ManagerService.Models.Supervisor;
 using Microsoft.EntityFrameworkCore;
 
 namespace ManagerService.Data
@@ -17,16 +15,9 @@ namespace ManagerService.Data
         // from manager
         public DbSet<DocumentForSpecialization> DocumentsForSpecialization { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }
-        public DbSet<StudentApplication> StudentApplications { get; set; }
-        public DbSet<StudentDocument> StudentDocuments { get; set; }
-
-        // from supervisor
-        public DbSet<SupervisorApplication> SupervisorApplications { get; set; }
-        public DbSet<StudentSupervisorApplication> StudentSupervisorApplications { get; set; }
-        public DbSet<TimeInterval> TimeIntervals { get; set; }
-        public DbSet<InterviewSlot> InterviewSlots { get; set; }
-        public DbSet<Interview> Interviews { get; set; }
-        public DbSet<SupervisorReview> SupervisorReviews { get; set; }
+        public DbSet<ManagerInterval> ManagerIntervals { get; set; }
+        public DbSet<ManagerSlot> ManagerSlots { get; set; }
+        public DbSet<ManagerInterview> ManagerInterviews { get; set; }
 
         // from shared
         public DbSet<Employee> Employees { get; set; }
@@ -40,44 +31,34 @@ namespace ManagerService.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            //from manager
-            // Настройка составного внешнего ключа для StudentDocument
-            modelBuilder.Entity<StudentDocument>(entity =>
-            {
-                entity.HasOne(sd => sd.DocumentForSpecialization)
-                      .WithMany(dfs => dfs.StudentDocument)
-                      .HasForeignKey(sd => new { sd.IdDocumentType, sd.IdSpecialization });
-            });
-
-            // supervisor
-            // StudentSupervisorApplication - составной ключ уже задан атрибутом [PrimaryKey]
-            // SupervisorReview - составной ключ уже задан атрибутом [PrimaryKey]
+            // добавление Enum-ов
+            modelBuilder.HasPostgresEnum<DocumentCheckStatus>();
+            modelBuilder.HasPostgresEnum<EmployeeRole>();            
+            modelBuilder.HasPostgresEnum<PracticeFormat>();
+            modelBuilder.HasPostgresEnum<SigningDocumentStatus>();
+            modelBuilder.HasPostgresEnum<ManagerSlotStatus>();
+                        
+            // from manager
 
             // Interview - 1:1 связь с InterviewSlot
-            modelBuilder.Entity<Interview>()
-                .HasOne(i => i.InterviewSlot)
-                .WithOne(islot => islot.Interview)
-                .HasForeignKey<Interview>(i => i.IdInterviewSlot)
+            modelBuilder.Entity<ManagerInterview>()
+                .HasOne(i => i.ManagerSlot)
+                .WithOne(islot => islot.ManagerInterview)
+                .HasForeignKey<ManagerInterview>(i => i.IdManagerSlot)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // InterviewSlot -> TimeInterval
-            modelBuilder.Entity<InterviewSlot>()
-                .HasOne(islot => islot.TimeInterval)
-                .WithMany(ti => ti.InterviewSlots)
-                .HasForeignKey(islot => islot.IdInterval)
+            modelBuilder.Entity<ManagerSlot>()
+                .HasOne(islot => islot.ManagerInterval)
+                .WithMany(ti => ti.ManagerSlots)
+                .HasForeignKey(islot => islot.IdManagerInterval)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Индексы для поиска
-            modelBuilder.Entity<SupervisorApplication>()
-                .HasIndex(sa => sa.Status);
-
-            modelBuilder.Entity<SupervisorApplication>()
-                .HasIndex(sa => sa.IdEmployee);
-
-            modelBuilder.Entity<InterviewSlot>()
+            modelBuilder.Entity<ManagerSlot>()
                 .HasIndex(islot => islot.Status);
 
-            modelBuilder.Entity<InterviewSlot>()
+            modelBuilder.Entity<ManagerSlot>()
                 .HasIndex(islot => islot.StartTime);
 
             // from shared
@@ -118,16 +99,6 @@ namespace ManagerService.Data
                 .WithMany(pt => pt.ScheduledPractices)
                 .HasForeignKey(sp => sp.IdPracticeType)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // добавление Enum-ов
-            modelBuilder.HasPostgresEnum<DocumentCheckStatus>();
-            modelBuilder.HasPostgresEnum<EmployeeRole>();
-            modelBuilder.HasPostgresEnum<InterviewSlotStatus>();
-            modelBuilder.HasPostgresEnum<InterviewType>();
-            modelBuilder.HasPostgresEnum<PracticeFormat>();
-            modelBuilder.HasPostgresEnum<SigningDocumentStatus>();
-            modelBuilder.HasPostgresEnum<StudentApplicationStatus>();
-            modelBuilder.HasPostgresEnum<SupervisorApplicationStatus>();
         }
     }
 }

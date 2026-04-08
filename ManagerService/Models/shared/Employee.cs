@@ -7,7 +7,7 @@ namespace ManagerService.Models.shared;
 public class Employee
 {
     [Key]
-    public Guid IdEmployee { get; set; } = Guid.NewGuid();
+    public int IdEmployee { get; set; }
     
     [Required]
     [MaxLength(255)]
@@ -27,7 +27,8 @@ public class Employee
     public string Position { get; set; } = string.Empty;
     
     public int? IdDepartment { get; set; }
-    
+
+    [Column(TypeName = "employee_role")]
     public EmployeeRole Role { get; set; } = EmployeeRole.Supervisor;
     
     [MaxLength(255)]

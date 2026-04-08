@@ -1,0 +1,41 @@
+﻿@model ManagerService.Models.shared.PracticeType
+
+@{
+    ViewData["Title"] = "Детали типа практики";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-2">ID</dt>
+            <dd class="col-sm-10">@Model.IdPracticeType</dd>
+
+            <dt class="col-sm-2">Название</dt>
+            <dd class="col-sm-10">@Model.Name</dd>
+
+            <dt class="col-sm-2">Описание</dt>
+            <dd class="col-sm-10">@Model.Description</dd>
+
+            <dt class="col-sm-2">Активен</dt>
+            <dd class="col-sm-10">
+                @if (Model.IsActive)
+                {
+                    <span class="badge bg-success">Да</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Нет</span>
+                }
+            </dd>
+
+            <dt class="col-sm-2">Дата создания</dt>
+            <dd class="col-sm-10">@Model.CreatedAt?.ToString("dd.MM.yyyy")</dd>
+        </dl>
+    </div>
+    <div class="card-footer">
+        <a asp-action="Edit" asp-route-id="@Model.IdPracticeType" class="btn btn-warning">Редактировать</a>
+        <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+    </div>
+</div>

@@ -1,7 +1,5 @@
 ﻿using ManagerService.Models.shared;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata;
 
 namespace ManagerService.Models.manager
 {
@@ -14,6 +12,8 @@ namespace ManagerService.Models.manager
         // [Key]
         public int IdSpecialization { get; set; }
 
-        public ICollection<StudentDocument> StudentDocument { get; set; } = new List<StudentDocument>(); // Навигационное свойство
+        // navigation
+        public DocumentType? DocumentType { get; set; } = new DocumentType();
+        public Specialization? Specialization { get; set; } = new Specialization();
     }
 }
