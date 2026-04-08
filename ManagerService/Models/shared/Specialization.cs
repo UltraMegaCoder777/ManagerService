@@ -16,7 +16,5 @@ public class Specialization
     
     // Навигационные свойства
     public ICollection<ScheduledPractice> ScheduledPractices { get; set; } = new List<ScheduledPractice>();
-
-    // from danil
     public ICollection<DocumentForSpecialization> DocumentForSpecialization { get; set; } = new List<DocumentForSpecialization>();
 }

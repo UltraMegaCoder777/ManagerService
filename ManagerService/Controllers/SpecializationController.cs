@@ -1,6 +1,5 @@
 ﻿using ManagerService.Data;
-using ManagerService.DTO;
-using ManagerService.Models.shared;
+using ManagerService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManagerService.Controllers

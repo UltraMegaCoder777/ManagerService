@@ -1,5 +1,5 @@
 ﻿using ManagerService.Data;
-using ManagerService.DTO;
+using ManagerService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManagerService.Controllers
@@ -20,7 +20,7 @@ namespace ManagerService.Controllers
         {
             var practiceType = _context.PracticeTypes
             .Where(pt => pt.IdPracticeType == id)
-            .Select(pt => new PracticeTypeDto
+            .Select(pt => new PracticeTypeDTO
             {
                 IdPracticeType = pt.IdPracticeType,
                 Name = pt.Name,
@@ -36,10 +36,10 @@ namespace ManagerService.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<PracticeTypeDto>> GetPracticeTypes()
+        public ActionResult<List<PracticeTypeDTO>> GetPracticeTypes()
         {
             var practiceTypes = _context.PracticeTypes
-            .Select(pt => new PracticeTypeDto
+            .Select(pt => new PracticeTypeDTO
             {
                 IdPracticeType = pt.IdPracticeType,
                 Name = pt.Name,

@@ -1,5 +1,7 @@
 using ManagerService.Data; // Пространство имен твоего контекста
 using Microsoft.EntityFrameworkCore;
+using ManagerService.Mappings; //for mapping
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,10 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // ============================================
+
+// mapper registration
+builder.Services.AddAutoMapper(cfg => { },
+    typeof(ScheduledPracticeProfile));
 
 var app = builder.Build();
 
