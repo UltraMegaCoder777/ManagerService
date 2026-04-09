@@ -4,10 +4,10 @@ using ManagerService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ManagerService.Controllers
+namespace ManagerService.Controllers.v1
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ScheduledPracticeController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -19,7 +19,6 @@ namespace ManagerService.Controllers
             _mapper = mapper;
         }
 
-        // GET: ScheduledPractice
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ScheduledPracticeDTO>>> GetAllScheduledPractices()
         {
@@ -32,7 +31,6 @@ namespace ManagerService.Controllers
             return Ok(dtos);
         }
 
-        // GET: ScheduledPractice/GetById?id=1
         [HttpGet("GetById")]
         public async Task<ActionResult<ScheduledPracticeDTO>> GetScheduledPracticeById(int id)
         {

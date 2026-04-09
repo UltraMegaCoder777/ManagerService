@@ -1,6 +1,9 @@
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using ManagerService.Data; // Пространство имен твоего контекста
-using Microsoft.EntityFrameworkCore;
 using ManagerService.Mappings; //for mapping
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi; // Добавьте этот using
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 
 // ===== РЕГИСТРАЦИЯ КОНТЕКСТА БАЗЫ ДАННЫХ =====
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -18,28 +22,58 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddAutoMapper(cfg => { },
     typeof(ScheduledPracticeProfile));
 
-// регистрация опенапи
-builder.Services.AddOpenApi();
+// ========== НАСТРОЙКА ВЕРСИОНИРОВАНИЯ ==========
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
+// ========== НАСТРОЙКА SWAGGER (ВМЕСТО AddOpenApi) ==========
+builder.Services.AddSwaggerGen(options =>
+{
+    // Настройка Swagger для поддержки нескольких версий
+    IApiVersionDescriptionProvider provider = builder.Services.BuildServiceProvider()
+        .GetRequiredService<IApiVersionDescriptionProvider>();
+
+    foreach (var description in provider.ApiVersionDescriptions)
+    {
+        options.SwaggerDoc(description.GroupName, new OpenApiInfo
+        {
+            Title = $"ManagerService API {description.GroupName}",
+            Version = description.ApiVersion.ToString(),
+            Description = description.IsDeprecated ? "⚠️ This API version is deprecated" : ""
+        });
+    }
+});
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapStaticAssets();
 
-// тоже что-то для openapi
+// ========== НАСТРОЙКА SWAGGER UI ==========
 if (app.Environment.IsDevelopment())
 {
-    // 2. Генерируем OpenAPI JSON (доступен по адресу /openapi/v1.json)
-    app.MapOpenApi();
-
-    // 3. НАСТРАИВАЕМ Swagger UI так, чтобы он читал JSON, сгенерированный .NET 10
+    app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "My API V1");
+        var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+        foreach (var description in provider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint(
+                $"/swagger/{description.GroupName}/swagger.json",
+                $"ManagerService API {description.GroupName.ToUpperInvariant()}"
+            );
+        }
     });
 }
 

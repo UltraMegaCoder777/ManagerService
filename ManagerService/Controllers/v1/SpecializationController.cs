@@ -2,10 +2,11 @@
 using ManagerService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ManagerService.Controllers
+namespace ManagerService.Controllers.v1
 {
     [ApiController]
-    [Route("Specializations")]
+    [Asp.Versioning.ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class SpecializationController : Controller
     {
         private readonly ApplicationDbContext _context;

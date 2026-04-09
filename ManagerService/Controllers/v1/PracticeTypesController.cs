@@ -2,10 +2,10 @@
 using ManagerService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ManagerService.Controllers
+namespace ManagerService.Controllers.v1
 {
     [ApiController]
-    [Route("PracticeTypes")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class PracticeTypesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -45,7 +45,7 @@ namespace ManagerService.Controllers
                 Name = pt.Name,
                 Description = pt.Description
             })
-            .ToList();
+            .ToList(); //как-то обработать ситуацию, когда сервер не отвечает
 
             if (practiceTypes.Count == 0)
             {

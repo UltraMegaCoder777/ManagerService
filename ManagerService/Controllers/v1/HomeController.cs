@@ -2,7 +2,7 @@ using ManagerService.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace ManagerService.Controllers
+namespace ManagerService.Controllers.v1
 {
     public class HomeController : Controller
     {

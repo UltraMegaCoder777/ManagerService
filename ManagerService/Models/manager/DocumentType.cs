@@ -1,5 +1,4 @@
-﻿using ManagerService.Models.shared;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ManagerService.Models.manager
 {
