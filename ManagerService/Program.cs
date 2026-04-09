@@ -55,7 +55,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();//переадресация на https
 app.UseRouting();
 app.UseAuthorization();
 app.MapStaticAssets();

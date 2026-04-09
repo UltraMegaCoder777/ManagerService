@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace ManagerService.Controllers.v1
 {
     [ApiController]
-    [Asp.Versioning.ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class SpecializationController : Controller
     {

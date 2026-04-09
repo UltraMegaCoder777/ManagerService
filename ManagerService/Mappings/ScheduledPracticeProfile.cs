@@ -8,13 +8,6 @@ namespace ManagerService.Mappings
     {
         public ScheduledPracticeProfile()
         {
-            // Маппинг Specialization → SpecializationDTO
-            CreateMap<Specialization, SpecializationDTO>();
-
-            // Маппинг PracticeType → PracticeTypeDTO
-            CreateMap<PracticeType, PracticeTypeDTO>();
-
-            // Маппинг ScheduledPractice → ScheduledPracticeDTO
             CreateMap<ScheduledPractice, ScheduledPracticeDTO>()
                 .ForMember(dest => dest.Specialization,
                     opt => opt.MapFrom(src => src.Specialization))
